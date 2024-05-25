@@ -5,7 +5,18 @@ meta {
 }
 
 post {
-  url: http://localhost:3000/anki/phrases/generate
-  body: none
+  url: {{BASE_HOST}}/anki/phrases/generate
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "data": {
+      "words": [
+        "other",
+        "person"
+      ]
+    }
+  }
 }
