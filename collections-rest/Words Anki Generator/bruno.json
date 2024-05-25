@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Words Anki Generator",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
