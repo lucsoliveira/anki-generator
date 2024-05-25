@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { AnkiModule } from './anki/anki.module';
 import { ChatgptModule } from './chatgpt/chatgpt.module';
 import { ConfigModule } from '@nestjs/config';
+import { FilesModule } from './files/files.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -11,6 +12,7 @@ import { ConfigModule } from '@nestjs/config';
     }),
     AnkiModule,
     ChatgptModule,
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
