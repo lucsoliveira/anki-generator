@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { Button } from '../../shared/UI/Button';
+import { Box } from '../../shared/UI/Box';
+import { PhraseItem } from './types/phrases';
+import { DeckSelector } from './components/DecksSelector';
 
 export function WordsForm() {
   const [words, setWords] = useState<string[]>([]);
   const [wordsData, setWordsData] = useState<string>('');
+  const [generatedPhrases, setGeneratedPhrases] = useState<PhraseItem[]>([]);
   function handleAddClick(data: string) {
-    console.log({ data });
     const wordsSplitted = data.split('\n');
     setWords(wordsSplitted);
     setWordsData('');
@@ -21,8 +24,75 @@ export function WordsForm() {
     setWords([]);
   }
 
-  function handleGeneratePhrases() {
+  async function postGeneratePhrases(words: string[]) {
+    const options = {
+      method: 'POST',
+      url: 'http://localhost:3001/anki/phrases/generate',
+      data: { data: { words: words } },
+    };
+
+    // const response = await axios.request(options);
+
+    const response = {
+      data: {
+        data: {
+          texts: [
+            {
+              word: 'home',
+              wordTranslated: 'casa',
+              example: {
+                phrase: 'I love spending time at <b>home</b>.',
+                phraseWithoutFormat: 'I love spending time at home.',
+                translated: 'Eu adoro passar tempo em casa.',
+              },
+            },
+            {
+              word: 'rain',
+              wordTranslated: 'chuva',
+              example: {
+                phrase:
+                  "Don't forget your umbrella, it's <b>rain</b>ing outside.",
+                phraseWithoutFormat:
+                  "Don't forget your umbrella, it's raining outside.",
+                translated:
+                  'Não se esqueça do guarda-chuva, está chovendo lá fora.',
+              },
+            },
+            {
+              word: 'kitchen',
+              wordTranslated: 'cozinha',
+              example: {
+                phrase: "I'm going to cook something in the <b>kitchen</b>.",
+                phraseWithoutFormat:
+                  "I'm going to cook something in the kitchen.",
+                translated: 'Eu vou cozinhar algo na cozinha.',
+              },
+            },
+          ],
+        },
+      },
+    };
+
+    const res: {
+      texts: PhraseItem[];
+    } = response.data.data;
+
+    return {
+      success: true,
+      texts: res.texts,
+    };
+  }
+
+  async function handleGeneratePhrases() {
     // setWords([]);
+    console.log({ words });
+    postGeneratePhrases(words)
+      .then((res) => {
+        console.log({ res });
+        setGeneratedPhrases(res.texts);
+      })
+      .catch((error) => {})
+      .finally(() => {});
   }
   return (
     <div>
@@ -101,6 +171,38 @@ export function WordsForm() {
           )}
         </div>
       </div>
+
+      <Box title="Resultados">
+        <div
+          className="list-group"
+          style={{
+            maxHeight: '300px',
+            overflow: 'auto',
+          }}
+        >
+          {generatedPhrases.map((item) => (
+            <a className="list-group-item list-group-item-action">
+              <div className="d-flex w-100 justify-content-between">
+                <h5>{item.word}</h5>
+                <small>
+                  <Button>Remover</Button>
+                </small>
+              </div>
+              <p>{item.example.phraseWithoutFormat}</p>
+              <small>{item.example.translated}</small>
+            </a>
+          ))}
+        </div>
+
+        <div>
+          <DeckSelector
+            onChangeSelected={(val) => {
+              console.log({ val });
+            }}
+          />
+          <Button onClick={() => {}}>Adicionar ao Anki</Button>
+        </div>
+      </Box>
     </div>
   );
 }

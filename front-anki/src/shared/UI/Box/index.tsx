@@ -4,10 +4,12 @@ const BoxStyle = styled.div`
 `;
 export function Box({
   children,
+  title,
   padding,
 }: {
+  title?: string;
   children: any;
-  padding: string | number;
+  padding?: string | number;
 }) {
   return (
     <BoxStyle
@@ -15,6 +17,7 @@ export function Box({
         padding,
       }}
     >
+      <h2>{title}</h2>
       {children}
     </BoxStyle>
   );

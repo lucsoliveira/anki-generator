@@ -1,11 +1,16 @@
-import { Body, Controller, Logger, Post } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post } from '@nestjs/common';
 import { AnkiService } from './anki.service';
 import { CardDataDTO, ResultPhrasesDTO } from './dto';
+import { AnkiConnectService } from '../anki-connect/anki-connect.service';
+import { ResultGetDecksDTO } from './dto/decks';
 
 @Controller('anki')
 export class AnkiController {
   private readonly logger = new Logger(AnkiController.name);
-  constructor(private ankiService: AnkiService) {}
+  constructor(
+    private ankiService: AnkiService,
+    private ankiConnectService: AnkiConnectService,
+  ) {}
   @Post('/phrases/generate')
   async generatePhrases(
     @Body()
@@ -78,6 +83,25 @@ export class AnkiController {
       console.log({ cards });
       return {
         data: { cards },
+      };
+    } catch (error) {
+      this.logger.error(`${error.message}`);
+      return {
+        data: null,
+        error: error.message,
+      };
+    }
+  }
+
+  @Get('/decks')
+  async getDecks(): Promise<ResultGetDecksDTO> {
+    this.logger.log(`getting decks`);
+
+    try {
+      const result = await this.ankiConnectService.getDeckes();
+      const decks = result.result;
+      return {
+        data: { decks },
       };
     } catch (error) {
       this.logger.error(`${error.message}`);

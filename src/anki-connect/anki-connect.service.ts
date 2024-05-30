@@ -8,8 +8,10 @@ export class AnkiConnectService {
   constructor() {}
 
   async getDeckes() {
-    const result = await axios.get('http://localhost:8765', {
+    const result = await axios.request({
+      baseURL: 'http://localhost:8765',
       method: 'POST',
+      data: { action: 'deckNames', version: 6 },
     });
 
     const data: GetDecksNamesDTO = await result.data;
