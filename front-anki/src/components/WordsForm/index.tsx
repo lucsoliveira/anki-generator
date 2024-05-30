@@ -3,6 +3,7 @@ import { Button } from '../../shared/UI/Button';
 import { Box } from '../../shared/UI/Box';
 import { PhraseItem } from './types/phrases';
 import { DeckSelector } from './components/DecksSelector';
+import axios from 'axios';
 
 export function WordsForm() {
   const [words, setWords] = useState<string[]>([]);
@@ -83,9 +84,36 @@ export function WordsForm() {
     };
   }
 
+  async function postGenerateAudios(phrases: PhraseItem[]) {
+    const options = {
+      method: 'POST',
+      url: 'http://localhost:3001/anki/phrases/generate/audio',
+      data: {
+        data: {
+          texts: phrases,
+        },
+      },
+    };
+
+    const response = await axios.request(options);
+
+    const data: {
+      data: {
+        audios: {
+          word: string;
+          audioPath: string;
+        }[];
+      };
+    } = response.data;
+
+    return {
+      success: true,
+      audios: data.data.audios,
+    };
+  }
+
   async function handleGeneratePhrases() {
     // setWords([]);
-    console.log({ words });
     postGeneratePhrases(words)
       .then((res) => {
         console.log({ res });
@@ -94,6 +122,29 @@ export function WordsForm() {
       .catch((error) => {})
       .finally(() => {});
   }
+
+  async function handleGenerateAudios() {
+    postGenerateAudios(generatedPhrases)
+      .then((res) => {
+        const audios = res.audios;
+        const phrases = JSON.parse(JSON.stringify(generatedPhrases));
+        const phrasesWithAudio = phrases.map((item) => {
+          const audio = audios.filter((a) => a.word === item.word);
+
+          return {
+            ...item,
+            audioPath: audio.length > 0 ? audio[0] : null,
+          };
+        });
+
+        console.log({ phrasesWithAudio });
+
+        setGeneratedPhrases(phrasesWithAudio);
+      })
+      .catch((error) => {})
+      .finally(() => {});
+  }
+
   return (
     <div>
       <div>
@@ -184,15 +235,22 @@ export function WordsForm() {
             <a className="list-group-item list-group-item-action">
               <div className="d-flex w-100 justify-content-between">
                 <h5>{item.word}</h5>
-                <small>
-                  <Button>Remover</Button>
-                </small>
+                <small>{/* <Button>Remover</Button> */}</small>
               </div>
               <p>{item.example.phraseWithoutFormat}</p>
               <small>{item.example.translated}</small>
+              <small>{item.example.translated}</small>
+
+              {item.audioPath && (
+                <audio controls>
+                  <source src="audios/person.mp3" type="audio/mpeg" />
+                  Your browser does not support the audio element.
+                </audio>
+              )}
             </a>
           ))}
         </div>
+        <Button onClick={handleGenerateAudios}>Gerar Audios</Button>
 
         <div>
           <DeckSelector
@@ -200,6 +258,8 @@ export function WordsForm() {
               console.log({ val });
             }}
           />
+
+          <div>resultados</div>
           <Button onClick={() => {}}>Adicionar ao Anki</Button>
         </div>
       </Box>

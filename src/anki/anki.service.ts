@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ChatgptService } from 'src/chatgpt/chatgpt.service';
+import { ChatgptService } from '../chatgpt/chatgpt.service';
 import { CardDataDTO, ItemPhraseDTO, ResultPhrasesDTO } from './dto';
 import { PROMPT_PHRASES } from './prompts';
-import { FilesService } from 'src/files/files.service';
-import axios from 'axios';
+import { FilesService } from '../files/files.service';
+import { AnkiConnectService } from '../anki-connect/anki-connect.service';
 
 @Injectable()
 export class AnkiService {
@@ -11,6 +11,7 @@ export class AnkiService {
   constructor(
     private gptService: ChatgptService,
     private filesService: FilesService,
+    private ankiConnectService: AnkiConnectService,
   ) {}
   async generatePhrases(words: string[]) {
     const normalizeWords = words.join(',').toLocaleLowerCase();
@@ -20,72 +21,62 @@ export class AnkiService {
     return result;
   }
 
-  async generateCardsAudios(words: ItemPhraseDTO[]): Promise<CardDataDTO[]> {
-    const cardsDatas: CardDataDTO[] = [];
+  async generateAudios(
+    words: ItemPhraseDTO[],
+    options: {
+      defaultVoice: any;
+      randomVoice: boolean;
+    },
+  ): Promise<{ word: string; audioPath: string }[]> {
+    const audioPaths: { word: string; audioPath: string }[] = [];
     for (const w of words) {
       const fileName = w.word + '.mp3';
       const audioData = await this.gptService.generateAudio(
         w.example.phraseWithoutFormat,
         {
-          defaultVoice: 'alloy',
-          randomVoice: true,
+          defaultVoice: options.defaultVoice,
+          randomVoice: options.randomVoice,
         },
       );
       const arrayBuffer = await audioData.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
       const audioPath = await this.filesService.create(fileName, buffer);
-      cardsDatas.push({
-        cardFront: w.example.phrase,
-        cardBack: w.example.translated,
+      this.logger.debug(`audioPath ${audioPath}`);
+      audioPaths.push({
+        word: w.word,
         audioPath: audioPath,
       });
     }
 
-    return cardsDatas;
+    return audioPaths;
   }
 
-  // TODO: finalizar
-  async addCardsToAnkiLocal(cards: CardDataDTO[]) {}
+  async generateCardsData(words: ItemPhraseDTO[]): Promise<CardDataDTO[]> {
+    const cardsDatas: CardDataDTO[] = [];
 
-  // TODO: lembrar do funcionamento da rota de storeMediaFile
-  async uploadFileToAnki({
-    pathAudio,
-    fileName,
-  }: {
-    fileName: string;
-    pathAudio: string;
-  }) {
-    let result: any;
-    try {
-      const fileUrl = `http://localhost:3000/uploads?fileName=${fileName}`;
+    // Upload audio to anki library and get name
+    for (const w of words) {
+      const randomId = Math.round(Math.random() * 1000);
+      const newFileName = w.word + randomId + '.mp3';
+      this.logger.debug(`newFileName ${newFileName}`);
 
-      this.logger.debug(
-        `[ANKIAPI] creating file ${fileName} path ${pathAudio}`,
-      );
-
-      const body = {
-        action: 'storeMediaFile',
-        version: 6,
-        params: {
-          filename: fileName,
-          url: fileUrl,
-        },
-      };
-
-      const _result = await axios.request({
-        baseURL: 'http://localhost:8765/',
-        data: body,
+      const audioData = await this.filesService.convertToBase64(w.audioPath);
+      const audioAnkiLibrary = await this.ankiConnectService.uploadFileToAnki({
+        data: audioData,
+        fileName: newFileName,
       });
 
-      const data = _result.data;
+      this.logger.debug(`audio data generated`);
+      this.logger.debug(`audioAnkiLibrary ${JSON.stringify(audioAnkiLibrary)}`);
 
-      result = data;
-      this.logger.debug(`[ANKIAPI] success file ${fileName}`);
-    } catch (error: any) {
-      this.logger.error(`[ANKIAPI] error: ${error.message}`);
-      result = null;
+      cardsDatas.push({
+        cardFront: w.example.phrase,
+        cardBack: w.example.translated,
+        audioPath: audioAnkiLibrary.finalPath,
+        audioName: audioAnkiLibrary.name,
+      });
     }
 
-    return result;
+    return cardsDatas;
   }
 }

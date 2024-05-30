@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Logger, Post } from '@nestjs/common';
 import { AnkiService } from './anki.service';
-import { CardDataDTO, ResultPhrasesDTO } from './dto';
+import { CardDataDTO, ItemPhraseDTO, ResultPhrasesDTO } from './dto';
 import { AnkiConnectService } from '../anki-connect/anki-connect.service';
 import { ResultGetDecksDTO } from './dto/decks';
 
@@ -39,50 +39,59 @@ export class AnkiController {
     }
   }
 
-  @Post('/cards/generate')
+  @Post('/phrases/generate/audio')
   async generateCards(
     @Body()
     generatePhraseDto: {
       data: {
-        words: string[];
+        texts: ItemPhraseDTO[];
       };
     },
-  ): Promise<{ data: { cards: CardDataDTO[] } | null; error?: string }> {
-    const { words } = generatePhraseDto.data;
+  ): Promise<any> {
+    const { texts } = generatePhraseDto.data;
 
-    this.logger.log(`starting generate phrases`);
-    this.logger.debug(`input: ${words.join(',')}`);
+    this.logger.log(`starting generate texts audios. texts ${texts.length}`);
 
     try {
-      const result = await this.ankiService.generatePhrases(words);
-
-      // const result = {
-      //   texts: [
-      //     {
-      //       word: 'string 1',
-      //       wordTranslated: 'string',
-      //       example: {
-      //         phrase: 'string',
-      //         phraseWithoutFormat: 'string',
-      //         translated: 'string',
-      //       },
-      //     },
-      //     {
-      //       word: 'string 2',
-      //       wordTranslated: 'string',
-      //       example: {
-      //         phrase: 'string',
-      //         phraseWithoutFormat: 'string',
-      //         translated: 'string',
-      //       },
-      //     },
-      //   ],
-      // };
-
-      const cards = await this.ankiService.generateCardsAudios(result.texts);
-      console.log({ cards });
+      const audios = await this.ankiService.generateAudios(texts, {
+        defaultVoice: 'alloy',
+        randomVoice: true,
+      });
       return {
-        data: { cards },
+        data: { audios },
+      };
+    } catch (error) {
+      this.logger.error(`${error.message}`);
+      return {
+        data: null,
+        error: error.message,
+      };
+    }
+  }
+
+  @Post('/cards/generate')
+  async generateCardsAndSync(
+    @Body()
+    generatePhraseDto: {
+      data: {
+        deckName: string;
+        texts: ItemPhraseDTO[];
+      };
+    },
+  ): Promise<any> {
+    const { deckName, texts } = generatePhraseDto.data;
+
+    this.logger.log(`starting generate texts audios. texts ${texts.length}`);
+
+    try {
+      const cardsData = await this.ankiService.generateCardsData(texts);
+
+      for (const card of cardsData) {
+        await this.ankiConnectService.addNote(deckName, card);
+        this.logger.log(`card '${card.cardFront}' created`);
+      }
+      return {
+        data: { cardsData },
       };
     } catch (error) {
       this.logger.error(`${error.message}`);

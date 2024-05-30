@@ -2,6 +2,7 @@ export interface CardDataDTO {
   cardFront: string;
   cardBack: string;
   audioPath: string;
+  audioName: string;
 }
 export interface ItemPhraseDTO {
   word: string;
@@ -11,6 +12,7 @@ export interface ItemPhraseDTO {
     phraseWithoutFormat: string;
     translated: string;
   };
+  audioPath?: string;
 }
 
 export interface ResultPhrasesDTO {

@@ -6,4 +6,6 @@ export type PhraseItem = {
     phraseWithoutFormat: string;
     translated: string;
   };
+  audioPath?: string;
+  audioName?: string;
 };

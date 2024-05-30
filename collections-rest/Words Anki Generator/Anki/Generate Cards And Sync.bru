@@ -1,0 +1,31 @@
+meta {
+  name: Generate Cards And Sync
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{BASE_HOST}}/anki/cards/generate
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "data": {
+      "deckName": "Estudos",
+      "texts": [
+        {
+          "word": "other",
+          "wordTranslated": "outro",
+          "example": {
+            "phrase": "I have two cats; one is black and the <br>other</b> is white.",
+            "phraseWithoutFormat": "I have two cats; one is black and the other is white.",
+            "translated": "Eu tenho dois gatos; um é preto e o <br>outro</b> é branco."
+          },
+          "audioPath": "/home/lucas/Documents/Git/Pessoal/words-anki-generator-api/dist/public/audios/home.mp3"
+        }
+      ]
+    }
+  }
+}
