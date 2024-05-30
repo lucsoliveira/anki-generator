@@ -1,0 +1,22 @@
+meta {
+  name: Health
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{BASE_HOST}}/health
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "data": {
+      "words": [
+        "other",
+        "person"
+      ]
+    }
+  }
+}
