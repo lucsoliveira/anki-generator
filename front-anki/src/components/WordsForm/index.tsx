@@ -9,6 +9,8 @@ export function WordsForm() {
   const [words, setWords] = useState<string[]>([]);
   const [wordsData, setWordsData] = useState<string>('');
   const [generatedPhrases, setGeneratedPhrases] = useState<PhraseItem[]>([]);
+  const [selectedDeck, setSelectedDeck] = useState<string | null>(null);
+
   function handleAddClick(data: string) {
     const wordsSplitted = data.split('\n');
     setWords(wordsSplitted);
@@ -32,47 +34,47 @@ export function WordsForm() {
       data: { data: { words: words } },
     };
 
-    // const response = await axios.request(options);
+    const response = await axios.request(options);
 
-    const response = {
-      data: {
-        data: {
-          texts: [
-            {
-              word: 'home',
-              wordTranslated: 'casa',
-              example: {
-                phrase: 'I love spending time at <b>home</b>.',
-                phraseWithoutFormat: 'I love spending time at home.',
-                translated: 'Eu adoro passar tempo em casa.',
-              },
-            },
-            {
-              word: 'rain',
-              wordTranslated: 'chuva',
-              example: {
-                phrase:
-                  "Don't forget your umbrella, it's <b>rain</b>ing outside.",
-                phraseWithoutFormat:
-                  "Don't forget your umbrella, it's raining outside.",
-                translated:
-                  'Não se esqueça do guarda-chuva, está chovendo lá fora.',
-              },
-            },
-            {
-              word: 'kitchen',
-              wordTranslated: 'cozinha',
-              example: {
-                phrase: "I'm going to cook something in the <b>kitchen</b>.",
-                phraseWithoutFormat:
-                  "I'm going to cook something in the kitchen.",
-                translated: 'Eu vou cozinhar algo na cozinha.',
-              },
-            },
-          ],
-        },
-      },
-    };
+    // const response = {
+    //   data: {
+    //     data: {
+    //       texts: [
+    //         {
+    //           word: 'home',
+    //           wordTranslated: 'casa',
+    //           example: {
+    //             phrase: 'I love spending time at <b>home</b>.',
+    //             phraseWithoutFormat: 'I love spending time at home.',
+    //             translated: 'Eu adoro passar tempo em casa.',
+    //           },
+    //         },
+    //         {
+    //           word: 'rain',
+    //           wordTranslated: 'chuva',
+    //           example: {
+    //             phrase:
+    //               "Don't forget your umbrella, it's <b>rain</b>ing outside.",
+    //             phraseWithoutFormat:
+    //               "Don't forget your umbrella, it's raining outside.",
+    //             translated:
+    //               'Não se esqueça do guarda-chuva, está chovendo lá fora.',
+    //           },
+    //         },
+    //         {
+    //           word: 'kitchen',
+    //           wordTranslated: 'cozinha',
+    //           example: {
+    //             phrase: "I'm going to cook something in the <b>kitchen</b>.",
+    //             phraseWithoutFormat:
+    //               "I'm going to cook something in the kitchen.",
+    //             translated: 'Eu vou cozinhar algo na cozinha.',
+    //           },
+    //         },
+    //       ],
+    //     },
+    //   },
+    // };
 
     const res: {
       texts: PhraseItem[];
@@ -112,6 +114,41 @@ export function WordsForm() {
     };
   }
 
+  async function postAddAnki(deckName: string, phrases: PhraseItem[]) {
+    const normalizedPhrases = phrases.map((item) => {
+      return {
+        ...item,
+        audioPath: item.audioPath?.audioPath,
+      };
+    });
+    const options = {
+      method: 'POST',
+      url: 'http://localhost:3001/anki/cards/generate',
+      data: {
+        data: {
+          deckName: deckName,
+          texts: normalizedPhrases,
+        },
+      },
+    };
+
+    const result = await axios.request(options);
+
+    const data: {
+      data: {
+        cardsData: {
+          cardFront: string;
+          cardBack: string;
+          audioPath: string;
+          audioName: string;
+        }[];
+      };
+    } = result.data;
+    return {
+      cardsData: data.data.cardsData,
+    };
+  }
+
   async function handleGeneratePhrases() {
     // setWords([]);
     postGeneratePhrases(words)
@@ -143,6 +180,17 @@ export function WordsForm() {
       })
       .catch((error) => {})
       .finally(() => {});
+  }
+
+  async function handleAddAnki() {
+    if (selectedDeck) {
+      postAddAnki(selectedDeck, generatedPhrases)
+        .then((res) => {
+          console.log({ res });
+        })
+        .catch((error) => {})
+        .finally(() => {});
+    }
   }
 
   return (
@@ -255,12 +303,13 @@ export function WordsForm() {
         <div>
           <DeckSelector
             onChangeSelected={(val) => {
-              console.log({ val });
+              setSelectedDeck(val);
             }}
           />
-
           <div>resultados</div>
-          <Button onClick={() => {}}>Adicionar ao Anki</Button>
+          {selectedDeck && (
+            <Button onClick={handleAddAnki}>Adicionar ao Anki</Button>
+          )}{' '}
         </div>
       </Box>
     </div>

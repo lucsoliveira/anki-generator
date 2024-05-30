@@ -53,7 +53,7 @@ export class AnkiConnectService {
               allowDuplicate: false,
               duplicateScope: 'deck',
               duplicateScopeOptions: {
-                deckName: 'Default',
+                deckName: deckName,
                 checkChildren: false,
                 checkAllModels: false,
               },
