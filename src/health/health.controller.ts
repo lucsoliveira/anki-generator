@@ -8,11 +8,13 @@ export class HealthController {
   async getHealth(): Promise<any> {
     const ankiConnectStatus = await this.ankiConnectService.checkHealth();
     return {
-      api: {
-        status: 'UP',
-        uptime: process.uptime(),
+      data: {
+        api: {
+          status: 'UP',
+          uptime: process.uptime(),
+        },
+        ankiConnect: ankiConnectStatus,
       },
-      ankiConnect: ankiConnectStatus,
     };
   }
 }
