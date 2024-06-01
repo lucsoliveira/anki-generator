@@ -3,13 +3,15 @@ import { Button } from '../../shared/UI/Button';
 import { Box } from '../../shared/UI/Box';
 import { PhraseItem } from './types/phrases';
 import { DeckSelector } from './components/DecksSelector';
-import axios from 'axios';
+import { useFetch } from '../../shared/hooks/useFetch';
+import { API_PATHS } from '../../shared/constants/paths';
 
 export function WordsForm() {
   const [words, setWords] = useState<string[]>([]);
   const [wordsData, setWordsData] = useState<string>('');
   const [generatedPhrases, setGeneratedPhrases] = useState<PhraseItem[]>([]);
   const [selectedDeck, setSelectedDeck] = useState<string | null>(null);
+  const { request } = useFetch();
 
   function handleAddClick(data: string) {
     const wordsSplitted = data.split('\n');
@@ -30,51 +32,11 @@ export function WordsForm() {
   async function postGeneratePhrases(words: string[]) {
     const options = {
       method: 'POST',
-      url: 'http://localhost:3001/anki/phrases/generate',
+      url: API_PATHS.ANKI.PHRASES.GENERATE,
       data: { data: { words: words } },
     };
 
-    const response = await axios.request(options);
-
-    // const response = {
-    //   data: {
-    //     data: {
-    //       texts: [
-    //         {
-    //           word: 'home',
-    //           wordTranslated: 'casa',
-    //           example: {
-    //             phrase: 'I love spending time at <b>home</b>.',
-    //             phraseWithoutFormat: 'I love spending time at home.',
-    //             translated: 'Eu adoro passar tempo em casa.',
-    //           },
-    //         },
-    //         {
-    //           word: 'rain',
-    //           wordTranslated: 'chuva',
-    //           example: {
-    //             phrase:
-    //               "Don't forget your umbrella, it's <b>rain</b>ing outside.",
-    //             phraseWithoutFormat:
-    //               "Don't forget your umbrella, it's raining outside.",
-    //             translated:
-    //               'Não se esqueça do guarda-chuva, está chovendo lá fora.',
-    //           },
-    //         },
-    //         {
-    //           word: 'kitchen',
-    //           wordTranslated: 'cozinha',
-    //           example: {
-    //             phrase: "I'm going to cook something in the <b>kitchen</b>.",
-    //             phraseWithoutFormat:
-    //               "I'm going to cook something in the kitchen.",
-    //             translated: 'Eu vou cozinhar algo na cozinha.',
-    //           },
-    //         },
-    //       ],
-    //     },
-    //   },
-    // };
+    const response = await request(options);
 
     const res: {
       texts: PhraseItem[];
@@ -89,7 +51,7 @@ export function WordsForm() {
   async function postGenerateAudios(phrases: PhraseItem[]) {
     const options = {
       method: 'POST',
-      url: 'http://localhost:3001/anki/phrases/generate/audio',
+      url: API_PATHS.ANKI.PHRASES.AUDIO,
       data: {
         data: {
           texts: phrases,
@@ -97,7 +59,7 @@ export function WordsForm() {
       },
     };
 
-    const response = await axios.request(options);
+    const response = await request(options);
 
     const data: {
       data: {
@@ -123,7 +85,7 @@ export function WordsForm() {
     });
     const options = {
       method: 'POST',
-      url: 'http://localhost:3001/anki/cards/generate',
+      url: API_PATHS.ANKI.CARDS.GENERATE,
       data: {
         data: {
           deckName: deckName,
@@ -132,7 +94,7 @@ export function WordsForm() {
       },
     };
 
-    const result = await axios.request(options);
+    const result = await request(options);
 
     const data: {
       data: {
@@ -156,7 +118,7 @@ export function WordsForm() {
         console.log({ res });
         setGeneratedPhrases(res.texts);
       })
-      .catch((error) => {})
+      .catch(() => {})
       .finally(() => {});
   }
 
@@ -174,11 +136,9 @@ export function WordsForm() {
           };
         });
 
-        console.log({ phrasesWithAudio });
-
         setGeneratedPhrases(phrasesWithAudio);
       })
-      .catch((error) => {})
+      .catch(() => {})
       .finally(() => {});
   }
 
@@ -188,7 +148,7 @@ export function WordsForm() {
         .then((res) => {
           console.log({ res });
         })
-        .catch((error) => {})
+        .catch(() => {})
         .finally(() => {});
     }
   }

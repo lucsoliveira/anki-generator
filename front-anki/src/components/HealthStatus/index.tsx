@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Box } from '../../shared/UI/Box';
-import axios from 'axios';
+import { useFetch } from '../../shared/hooks/useFetch';
+import { API_PATHS } from '../../shared/constants/paths';
 const HealthStatusStyle = styled.div`
   display: flex;
   flex-direction: column;
@@ -28,9 +29,10 @@ export function HealthStatus() {
     ankiConnect: false,
   });
 
+  const { get } = useFetch();
   async function fetchServicesStatus() {
     try {
-      const result = await axios.get('http://localhost:3001/health');
+      const result = await get(API_PATHS.HEALTH);
       const data: {
         data: {
           api: {
