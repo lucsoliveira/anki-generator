@@ -1,0 +1,15 @@
+meta {
+  name: decksNames
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{ANKI_CONNECT_HOST}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {"action": "deckNames", "version": 6}
+}

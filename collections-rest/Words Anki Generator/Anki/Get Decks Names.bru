@@ -1,0 +1,22 @@
+meta {
+  name: Get Decks Names
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{BASE_HOST}}/anki/decks
+  body: none
+  auth: none
+}
+
+body:json {
+  {
+    "data": {
+      "words": [
+        "other",
+        "person"
+      ]
+    }
+  }
+}

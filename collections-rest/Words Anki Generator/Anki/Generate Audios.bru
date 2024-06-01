@@ -1,0 +1,38 @@
+meta {
+  name: Generate Audios
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{BASE_HOST}}/anki/phrases/generate/audio
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "data": {
+      "texts": [
+        {
+          "word": "other",
+          "wordTranslated": "outro",
+          "example": {
+            "phrase": "I have two cats; one is black and the <br>other</b> is white.",
+            "phraseWithoutFormat": "I have two cats; one is black and the other is white.",
+            "translated": "Eu tenho dois gatos; um é preto e o <br>outro</b> é branco."
+          }
+        },
+        {
+          "word": "person",
+          "wordTranslated": "pessoa",
+          "example": {
+            "phrase": "It's not polite to point at <br>other</b> <b>person</b>s.",
+            "phraseWithoutFormat": "It's not polite to point at other persons.",
+            "translated": "Não é educado apontar para outras pessoas."
+          }
+        }
+      ]
+    }
+  }
+}
