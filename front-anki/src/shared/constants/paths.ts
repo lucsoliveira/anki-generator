@@ -3,10 +3,13 @@ export const API_PATHS = {
   ANKI: {
     PHRASES: {
       GENERATE: 'anki/phrases/generate',
-      AUDIO: "anki/phrases/generate/audio'",
+      AUDIO: 'anki/phrases/generate/audio',
     },
     CARDS: {
       GENERATE: 'anki/cards/generate',
+    },
+    DECKS: {
+      LIST: 'anki/decks',
     },
   },
 };

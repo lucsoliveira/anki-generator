@@ -1,28 +1,9 @@
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
 import { Box } from '../../shared/UI/Box';
 import { useFetch } from '../../shared/hooks/useFetch';
 import { API_PATHS } from '../../shared/constants/paths';
-const HealthStatusStyle = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.2rem;
-`;
+import { HealthStatusItem, HealthStatusStyle, StatusCircle } from './styles';
 
-const HealthStatusItem = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 0.3rem;
-  align-items: baseline;
-`;
-
-const StatusCircle = styled.div`
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  background-color: black;
-`;
 export function HealthStatus() {
   const [servicesStatus, setServicesStatus] = useState({
     api: false,
@@ -82,7 +63,7 @@ export function HealthStatus() {
     }
   };
   return (
-    <Box padding={15}>
+    <Box title="Status" padding={10}>
       <HealthStatusStyle>
         <HealthStatusItem>
           <StatusCircle

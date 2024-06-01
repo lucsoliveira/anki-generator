@@ -1,14 +1,15 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useFetch } from '../../../../shared/hooks/useFetch';
+import { API_PATHS } from '../../../../shared/constants/paths';
 
 export function DeckSelector({ onChangeSelected }: { onChangeSelected: any }) {
   const [decksNames, setDecksNames] = useState<string[]>([]);
   const [selectedDeck, setSelectedDeck] = useState<string | null>(null);
-
+  const { request } = useFetch();
   const fetchDecksNames = async () => {
-    const options = { method: 'GET', url: 'http://localhost:3001/anki/decks' };
+    const options = { method: 'GET', url: API_PATHS.ANKI.DECKS.LIST };
 
-    const response = await axios.request(options);
+    const response = await request(options);
     const data: {
       data: {
         decks: string[];
