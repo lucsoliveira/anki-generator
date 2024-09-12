@@ -8,6 +8,8 @@ import { API_PATHS } from "../../constants/paths";
 import { useFetch } from "../../hooks/useFetch";
 import { Box } from "../../UI/Box";
 import { Button } from "../../UI/Button";
+import { Loader } from "@/shared/UI";
+import { Typography } from "@mui/material";
 
 export function WordsForm() {
   const [words, setWords] = useState<string[]>([]);
@@ -178,7 +180,7 @@ export function WordsForm() {
       <Box title="Gerador de Frases" padding={10}>
         <div>
           <label htmlFor="formGroupExampleInput" className="form-label">
-            <p>Cole aqui as palavras separadas por linhas</p>
+            <Typography>Cole aqui as palavras separadas por linhas</Typography>
           </label>
           <textarea
             value={wordsData}
@@ -255,7 +257,7 @@ export function WordsForm() {
               <Button onClick={handleGeneratePhrases}>Gerar Frases</Button>
             )}
 
-            {isLoading && <p>Carregando...</p>}
+            {isLoading && <Loader />}
           </div>
         </div>
       </Box>

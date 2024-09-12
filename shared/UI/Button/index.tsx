@@ -1,9 +1,8 @@
 import React, { MouseEventHandler } from "react";
-import styled from "styled-components";
 import { VariantsBootsrap } from "../types/variants";
 import { VariantButton } from "../shareds/utils/variant";
-const ButtonStyle = styled.button``;
 
+import ButtonMT from "@mui/material/Button";
 export function Button({
   children,
   onClick,
@@ -16,12 +15,8 @@ export function Button({
   disabled?: boolean;
 }) {
   return (
-    <ButtonStyle
-      onClick={onClick}
-      className={`btn ${VariantButton[variant ?? "primary"]}`}
-      disabled={disabled}
-    >
+    <ButtonMT onClick={onClick} disabled={disabled} variant="contained">
       {children}
-    </ButtonStyle>
+    </ButtonMT>
   );
 }

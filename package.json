@@ -9,13 +9,23 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@fontsource/roboto": "^5.1.0",
+    "@mui/icons-material": "^6.1.0",
+    "@mui/material": "^6.1.0",
+    "@mui/styled-engine-sc": "^6.1.0",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
     "next": "14.2.9",
     "openai": "^4.58.2",
-    "react": "^18",
-    "react-dom": "^18",
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
     "styled-components": "^6.1.13"
+  },
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",
