@@ -1,3 +1,5 @@
 import { ChatgptServiceOpenAI } from "./openai.service";
+import { TestGPTService } from "./test-gpt.service";
 
-export const chatGPTService = new ChatgptServiceOpenAI();
+export const openAIGPT = new ChatgptServiceOpenAI();
+export const testGPT = new TestGPTService();

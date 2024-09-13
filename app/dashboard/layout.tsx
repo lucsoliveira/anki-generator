@@ -1,12 +1,6 @@
 "use client";
-import { Navbar } from "./partials/NavBar";
-import { DashboardLayoutStyle } from "./styles";
+import ResponsiveDrawer from "./components/drawer";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-  return (
-    <DashboardLayoutStyle>
-      <Navbar />
-      <main>{children}</main>
-    </DashboardLayoutStyle>
-  );
+export default function Dashboard({ children }: { children: React.ReactNode }) {
+  return <ResponsiveDrawer>{children}</ResponsiveDrawer>;
 }

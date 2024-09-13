@@ -1,24 +1,17 @@
-import styled from 'styled-components';
-const BoxStyle = styled.div`
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-`;
+import { Card } from "../Card";
+
 export function Box({
   children,
   title,
-  padding,
+  subtitle,
 }: {
-  title?: string;
-  children: any;
-  padding?: string | number;
+  title: string;
+  children: React.ReactNode;
+  subtitle?: string;
 }) {
   return (
-    <BoxStyle
-      style={{
-        padding,
-      }}
-    >
-      <h2>{title}</h2>
+    <Card title={title} subtitle={subtitle}>
       {children}
-    </BoxStyle>
+    </Card>
   );
 }

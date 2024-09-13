@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const ResultsBoxStyle = styled.div`
   display: flex;
@@ -7,4 +7,10 @@ export const ResultsBoxStyle = styled.div`
   max-height: 300px;
   padding: 1rem;
   overflow: auto;
+`;
+
+export const ResultsScroll = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 `;

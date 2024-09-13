@@ -1,21 +1,15 @@
+import { Card } from "@/shared/UI/Card";
 import { PhraseItem } from "../../types/phrases";
-import { ResultsBoxStyle } from "./style";
+import { ResultsBoxStyle, ResultsScroll } from "./style";
+import { Typography } from "@mui/material";
 
 export function ResultsBox({ phrases }: { phrases: PhraseItem[] }) {
   return (
     <ResultsBoxStyle>
-      <div className="list-group">
+      <ResultsScroll>
         {phrases.map((item, index) => (
-          <a
-            className="list-group-item list-group-item-action"
-            key={`a-${index}`}
-          >
-            <div className="d-flex w-100 justify-content-between">
-              <h5>{item.word}</h5>
-              <small>{/* <Button>Remover</Button> */}</small>
-            </div>
-            <p>{item.example.phraseWithoutFormat}</p>
-            <small>{item.example.translated}</small>
+          <Card key={index} title={item.word} subtitle={item.wordTranslated}>
+            <Typography>{item.example.phraseWithoutFormat}</Typography>
             <small>{item.example.translated}</small>
 
             {item.audioPath && (
@@ -24,9 +18,9 @@ export function ResultsBox({ phrases }: { phrases: PhraseItem[] }) {
                 Your browser does not support the audio element.
               </audio>
             )}
-          </a>
+          </Card>
         ))}
-      </div>
+      </ResultsScroll>
     </ResultsBoxStyle>
   );
 }
