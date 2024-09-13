@@ -18,6 +18,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
+import { useRouter } from "next/navigation";
 
 const drawerWidth = 240;
 
@@ -103,7 +104,15 @@ const Drawer = styled(MuiDrawer, {
   ],
 }));
 
-export default function MiniDrawer({ children }: { children }) {
+export default function MiniDrawer({
+  navItems,
+  children,
+}: {
+  navItems: { label: string; icon: React.ReactNode; path: string }[];
+  children;
+}) {
+  const router = useRouter();
+
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -151,8 +160,15 @@ export default function MiniDrawer({ children }: { children }) {
         </DrawerHeader>
         <Divider />
         <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: "block" }}>
+          {navItems.map((m, index) => (
+            <ListItem
+              key={m.label}
+              disablePadding
+              sx={{ display: "block" }}
+              onClick={() => {
+                router.push(m.path);
+              }}
+            >
               <ListItemButton
                 sx={[
                   {
@@ -183,10 +199,10 @@ export default function MiniDrawer({ children }: { children }) {
                         },
                   ]}
                 >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  {m.icon}
                 </ListItemIcon>
                 <ListItemText
-                  primary={text}
+                  primary={m.label}
                   sx={[
                     open
                       ? {
