@@ -2,14 +2,15 @@
 import { useState } from "react";
 import { PhraseItem } from "./types/phrases";
 import { DeckSelector } from "./components/DecksSelector";
-import { WordsFormStyle } from "./styles";
+import { ResultsBoxStyle, WordsFormStyle } from "./styles";
 import { ResultsBox } from "./components/ResultsBox";
 import { API_PATHS } from "../../constants/paths";
 import { useFetch } from "../../hooks/useFetch";
 import { Box } from "../../UI/Box";
 import { Button } from "../../UI/Button";
-import { Loader } from "@/shared/UI";
-import { Typography } from "@mui/material";
+import { Loader, SimpleList, SimpleListItem, TextAreaInput } from "@/shared/UI";
+import { IconButton, TextField, Typography } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export function WordsForm() {
   const [words, setWords] = useState<string[]>([]);
@@ -176,94 +177,66 @@ export function WordsForm() {
   }
 
   return (
-    <WordsFormStyle>
-      <Box title="Gerador de Frases" padding={10}>
-        <div>
-          <label htmlFor="formGroupExampleInput" className="form-label">
-            <Typography>Cole aqui as palavras separadas por linhas</Typography>
-          </label>
-          <textarea
-            value={wordsData}
-            onChange={(event) => {
-              setWordsData(event.currentTarget.value);
-            }}
-            className="form-control"
-            id="formGroupExampleInput"
-            placeholder="Palavras separadas por quebra de linha"
-          />
-          <Button
-            onClick={() => {
-              handleAddClick(wordsData);
-            }}
-          >
-            Adicionar
-          </Button>
-        </div>
-        <div>
-          <div
-            style={{
-              maxHeight: "300px",
-              overflow: "auto",
-            }}
-          >
-            <ol className="list-group list-group-numbered">
-              {words.map((val, index) => {
-                return (
-                  <li
-                    className="list-group-item d-flex justify-content-between align-items-start"
-                    key={index}
-                  >
-                    <div className="ms-2 me-auto">
-                      <div className="fw-bold">{val}</div>
-                    </div>
-                    <span
-                      style={{
-                        cursor: "pointer",
-                      }}
-                      aria-label="Remover palavra"
-                      className="badge text-bg-danger rounded-pill"
+    <Box title="Gerador de Frases">
+      <WordsFormStyle>
+        <TextAreaInput
+          label="Palavras"
+          value={wordsData}
+          placeholder="Palavras separadas por quebra de linha"
+          onChange={(val) => {
+            setWordsData(val);
+          }}
+        />
+
+        <Button
+          onClick={() => {
+            handleAddClick(wordsData);
+          }}
+        >
+          Adicionar
+        </Button>
+        <ResultsBoxStyle>
+          <SimpleList>
+            {words.map((val, index) => {
+              return (
+                <SimpleListItem
+                  id={`word-${index}`}
+                  value={val}
+                  key={`word-${index}`}
+                  onClick={() => {}}
+                  actions={
+                    <IconButton
+                      edge="end"
+                      aria-label="comments"
                       onClick={() => {
                         handleRemoveWord(index);
                       }}
                     >
-                      x
-                    </span>
-                  </li>
-                );
-              })}
-            </ol>
-          </div>
+                      <DeleteIcon />
+                    </IconButton>
+                  }
+                ></SimpleListItem>
+              );
+            })}
+          </SimpleList>
+        </ResultsBoxStyle>
 
-          {/* <div>
-          <select className="form-select" aria-label="Idioma de entrada">
-            <option selected>Idioma de entrada</option>
-            <option value="3">PT-BR</option>
-            <option value="3">EN</option>
-          </select>
+        <div>
+          {words.length > 0 && (
+            <Button onClick={handleCleanWords} variant="secondary">
+              Limpar
+            </Button>
+          )}
+          {words.length > 0 && (
+            <Button onClick={handleGeneratePhrases}>Gerar Frases</Button>
+          )}
 
-          <select className="form-select" aria-label="Idioma de saída">
-            <option selected>Idioma de saída</option>
-            <option value="3">PT-BR</option>
-            <option value="3">EN</option>
-          </select>
-        </div> */}
-          <div>
-            {words.length > 0 && (
-              <Button onClick={handleCleanWords} variant="secondary">
-                Limpar
-              </Button>
-            )}
-            {words.length > 0 && (
-              <Button onClick={handleGeneratePhrases}>Gerar Frases</Button>
-            )}
-
-            {isLoading && <Loader />}
-          </div>
+          {isLoading && <Loader />}
         </div>
-      </Box>
+      </WordsFormStyle>
 
       {generatedPhrases.length > 0 && (
-        <Box title="Resultados" padding={10}>
+        <Box title="Resultados">
           <ResultsBox phrases={generatedPhrases} />
           <Button onClick={handleGenerateAudios}>Gerar Audios</Button>
 
@@ -288,6 +261,6 @@ export function WordsForm() {
           </div>
         </Box>
       )}
-    </WordsFormStyle>
+    </Box>
   );
 }

@@ -1,10 +1,13 @@
 import { API_PATHS } from "@/shared/constants/paths";
 import { useFetch } from "@/shared/hooks/useFetch";
+import { SingleSelect } from "@/shared/UI";
 import { useEffect, useState } from "react";
 
 export function DeckSelector({ onChangeSelected }: { onChangeSelected: any }) {
   const [decksNames, setDecksNames] = useState<string[]>([]);
-  const [selectedDeck, setSelectedDeck] = useState<string | null>(null);
+  const [selectedDeck, setSelectedDeck] = useState<string | undefined>(
+    undefined
+  );
   const { request } = useFetch();
   const fetchDecksNames = async () => {
     const options = { method: "GET", url: API_PATHS.ANKI.DECKS.LIST };
@@ -37,17 +40,21 @@ export function DeckSelector({ onChangeSelected }: { onChangeSelected: any }) {
     }
   }, [selectedDeck]);
   return (
-    <select
-      onChange={(val) => {
-        setSelectedDeck(val.currentTarget.value);
-      }}
-      className="form-select"
-      aria-label="Selecione o Deck"
-    >
-      <option selected>Selecione o Deck</option>
-      {decksNames.map((name) => (
-        <option value={name}>{name}</option>
-      ))}
-    </select>
+    <>
+      <SingleSelect.Selector
+        label="Deck"
+        value={selectedDeck}
+        onChange={(val) => {
+          console.log({ val });
+          setSelectedDeck(val);
+        }}
+      >
+        {decksNames.map((name) => (
+          <SingleSelect.Item key={name} value={name}>
+            {name}
+          </SingleSelect.Item>
+        ))}
+      </SingleSelect.Selector>
+    </>
   );
 }
