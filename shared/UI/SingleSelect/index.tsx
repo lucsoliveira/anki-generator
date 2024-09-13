@@ -6,57 +6,45 @@ import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 function SingleSelectInput({
-  children,
-  value,
   label,
   onChange,
   helperText,
+  values,
+  value,
 }: {
-  children: React.ReactNode;
   value: string | undefined;
   onChange: (value: string) => unknown;
   label: string;
   helperText?: string;
+  values: { label: string; value: string }[];
 }) {
+  const [valueSelected, setValueSelected] = React.useState("");
+
   const handleChange = (event: SelectChangeEvent) => {
-    console.log({ event });
+    setValueSelected(event.target.value);
     onChange(event.target.value);
   };
-
   return (
     <FormControl sx={{ m: 1, minWidth: 120 }}>
       <InputLabel id="demo-simple-select-helper-label">{label}</InputLabel>
       <Select
         labelId="demo-simple-select-helper-label"
-        // id="demo-simple-select-helper"
-        value={value}
+        id="demo-simple-select-helper"
+        value={valueSelected ?? value}
         label={label}
         onChange={handleChange}
       >
-        {children}
+        {values.map((v) => (
+          <MenuItem key={v.value} value={v.value}>
+            {v.label}
+          </MenuItem>
+        ))}
       </Select>
       <FormHelperText>{helperText}</FormHelperText>
     </FormControl>
   );
 }
 
-function SingleSelectItem({
-  value,
-  key,
-  children,
-}: {
-  key: string;
-  value: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <MenuItem key={key} value={value}>
-      {children}
-    </MenuItem>
-  );
-}
-
 export const SingleSelect = {
   Selector: SingleSelectInput,
-  Item: SingleSelectItem,
 };

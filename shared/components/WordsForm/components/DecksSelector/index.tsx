@@ -3,7 +3,11 @@ import { useFetch } from "@/shared/hooks/useFetch";
 import { SingleSelect } from "@/shared/UI";
 import { useEffect, useState } from "react";
 
-export function DeckSelector({ onChangeSelected }: { onChangeSelected: any }) {
+export function DeckSelector({
+  onChangeSelected,
+}: {
+  onChangeSelected: (deck: string) => unknown;
+}) {
   const [decksNames, setDecksNames] = useState<string[]>([]);
   const [selectedDeck, setSelectedDeck] = useState<string | undefined>(
     undefined
@@ -45,16 +49,15 @@ export function DeckSelector({ onChangeSelected }: { onChangeSelected: any }) {
         label="Deck"
         value={selectedDeck}
         onChange={(val) => {
-          console.log({ val });
           setSelectedDeck(val);
         }}
-      >
-        {decksNames.map((name) => (
-          <SingleSelect.Item key={name} value={name}>
-            {name}
-          </SingleSelect.Item>
-        ))}
-      </SingleSelect.Selector>
+        values={decksNames.map((d) => {
+          return {
+            label: d,
+            value: d,
+          };
+        })}
+      />
     </>
   );
 }
