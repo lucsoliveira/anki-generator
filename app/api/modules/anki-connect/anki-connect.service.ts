@@ -3,8 +3,12 @@ import axios from "axios";
 import { CardDataDTO } from "../anki/dto";
 import { resolve } from "path";
 import { PATHS } from "../../../constants/paths";
+import { AnkiConnect } from "./ankiconnect";
 
-export class AnkiConnectService {
+/**
+ * V1 refs to the version of the AnkiConnect API 2024-07-26
+ */
+export class AnkiConnectServiceV1 implements AnkiConnect {
   private readonly logger = console;
   private COLLECTION_MEDIAS_PATH = PATHS.ANKI.COLLECTION_MEDIAS;
   protected client = axios.create({
@@ -22,7 +26,8 @@ export class AnkiConnectService {
 
     const data: GetDecksNamesDTO = await result.data;
 
-    return data;
+    const names = data.result;
+    return names;
   }
 
   async checkHealth() {
@@ -38,15 +43,14 @@ export class AnkiConnectService {
       return {
         status: "UP",
       };
-    } catch (error) {
-      this.logger.error(`[ANKI] ${error.message}`);
+    } catch (error: any) {
+      this.logger.error(`[ANKI] ${error?.message}`);
       return {
         status: "DOWN",
       };
     }
   }
 
-  // TODO: finalizar
   async addNote(deckName: string, card: CardDataDTO) {
     const options = {
       method: "POST",
@@ -56,7 +60,6 @@ export class AnkiConnectService {
         params: {
           note: {
             deckName,
-            // TODO: receber e criar model
             modelName: "Basic",
             fields: { Front: card.cardFront, Back: card.cardBack },
             options: {
@@ -85,7 +88,7 @@ export class AnkiConnectService {
 
     const data: {
       result: number;
-      error: any;
+      error: unknown;
     } = result.data;
 
     return {

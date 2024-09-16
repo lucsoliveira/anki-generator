@@ -1,3 +1,3 @@
-import { AnkiConnectService } from "./anki-connect.service";
+import { AnkiConnectServiceV1 } from "./anki-connect.service";
 
-export const ankiConnectService = new AnkiConnectService();
+export const ankiConnectService = new AnkiConnectServiceV1();

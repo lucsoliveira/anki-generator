@@ -1,13 +1,13 @@
+import { AnkiConnect } from "../anki-connect/ankiconnect";
 import { AnkiService } from "./anki.service";
 import { ItemPhraseDTO, ResultPhrasesDTO } from "./dto";
-import { AnkiConnectService } from "../anki-connect/anki-connect.service";
 import { ResultGetDecksDTO } from "./dto/decks";
 
 export class AnkiController {
   private readonly logger = console;
   constructor(
     readonly ankiService: AnkiService,
-    readonly ankiConnectService: AnkiConnectService
+    readonly ankiConnectService: AnkiConnect
   ) {}
   async generatePhrases(generatePhraseDto: {
     data: {
@@ -93,7 +93,7 @@ export class AnkiController {
 
     try {
       const result = await this.ankiConnectService.getDeckes();
-      const decks = result.result;
+      const decks = result;
       return {
         data: { decks },
       };
