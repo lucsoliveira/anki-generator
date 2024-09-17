@@ -19,6 +19,7 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import { useRouter } from "next/navigation";
+import { usePage } from "@/shared/hooks";
 
 const drawerWidth = 240;
 
@@ -109,7 +110,7 @@ export default function MiniDrawer({
   children,
 }: {
   navItems: { label: string; icon: React.ReactNode; path: string }[];
-  children;
+  children: React.ReactNode;
 }) {
   const router = useRouter();
 
@@ -122,6 +123,12 @@ export default function MiniDrawer({
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+  const { pathname } = usePage();
+
+  const getTitle = () => {
+    const item = navItems.find((m) => m.path === pathname);
+    return item ? item.label : "";
   };
 
   return (
@@ -144,7 +151,7 @@ export default function MiniDrawer({
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Mini variant drawer
+            {getTitle()}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -162,7 +169,7 @@ export default function MiniDrawer({
         <List>
           {navItems.map((m, index) => (
             <ListItem
-              key={m.label}
+              key={m.label + "-" + index}
               disablePadding
               sx={{ display: "block" }}
               onClick={() => {

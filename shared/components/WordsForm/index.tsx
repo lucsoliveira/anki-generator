@@ -41,7 +41,6 @@ export function WordsForm() {
   const { generatePhrases, generateAudios, addCard } = useServices();
 
   async function handleGeneratePhrases() {
-    // setWords([]);
     setIsLoading(true);
     generatePhrases(words)
       .then((res) => {
