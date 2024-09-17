@@ -1,4 +1,4 @@
-import { ankiController } from "@/app/api/modules/anki";
+import { ankiController } from "../../modules";
 
 export async function GET() {
   const result = await ankiController.getDecks();

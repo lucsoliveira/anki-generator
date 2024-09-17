@@ -1,4 +1,4 @@
-import { ankiController } from "@/app/api/modules/anki";
+import { ankiController } from "@/app/api/modules";
 import { NextApiRequest } from "next";
 
 export async function POST(req: NextApiRequest) {

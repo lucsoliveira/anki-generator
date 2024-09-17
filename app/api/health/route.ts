@@ -1,4 +1,4 @@
-import { ankiConnectService } from "../modules/anki-connect";
+import { ankiConnectService } from "../modules";
 
 export async function GET() {
   const res = {
