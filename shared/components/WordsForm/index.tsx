@@ -4,13 +4,12 @@ import { PhraseItem } from "./types/phrases";
 import { DeckSelector } from "./components/DecksSelector";
 import { ResultsBoxStyle, WordsFormStyle } from "./styles";
 import { ResultsBox } from "./components/ResultsBox";
-import { API_PATHS } from "../../constants/paths";
-import { useFetch } from "../../hooks/useFetch";
 import { Box } from "../../UI/Box";
 import { Button } from "../../UI/Button";
 import { Loader, SimpleList, SimpleListItem, TextAreaInput } from "@/shared/UI";
-import { IconButton, TextField, Typography } from "@mui/material";
+import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useServices } from "@/shared/hooks";
 
 export function WordsForm() {
   const [words, setWords] = useState<string[]>([]);
@@ -22,7 +21,6 @@ export function WordsForm() {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorOnAddAnki, setErrorOnAddAnki] = useState<boolean>(false);
-  const { request } = useFetch();
 
   function handleAddClick(data: string) {
     const wordsSplitted = data.split("\n");
@@ -40,92 +38,12 @@ export function WordsForm() {
     setWords([]);
   }
 
-  async function postGeneratePhrases(words: string[]) {
-    const options = {
-      method: "POST",
-      url: API_PATHS.ANKI.PHRASES.GENERATE,
-      data: { data: { words: words } },
-    };
-
-    const response = await request(options);
-
-    const res: {
-      texts: PhraseItem[];
-    } = response.data.data;
-
-    return {
-      success: true,
-      texts: res.texts,
-    };
-  }
-
-  async function postGenerateAudios(phrases: PhraseItem[]) {
-    const options = {
-      method: "POST",
-      url: API_PATHS.ANKI.PHRASES.AUDIO,
-      data: {
-        data: {
-          texts: phrases,
-        },
-      },
-    };
-
-    const response = await request(options);
-
-    const data: {
-      data: {
-        audios: {
-          word: string;
-          audioPath: string;
-        }[];
-      };
-    } = response.data;
-
-    return {
-      success: true,
-      audios: data.data.audios,
-    };
-  }
-
-  async function postAddAnki(deckName: string, phrases: PhraseItem[]) {
-    const normalizedPhrases = phrases.map((item) => {
-      return {
-        ...item,
-        audioPath: item.audioPath?.audioPath,
-      };
-    });
-    const options = {
-      method: "POST",
-      url: API_PATHS.ANKI.CARDS.GENERATE,
-      data: {
-        data: {
-          deckName: deckName,
-          texts: normalizedPhrases,
-        },
-      },
-    };
-
-    const result = await request(options);
-
-    const data: {
-      data: {
-        cardsData: {
-          cardFront: string;
-          cardBack: string;
-          audioPath: string;
-          audioName: string;
-        }[];
-      };
-    } = result.data;
-    return {
-      cardsData: data.data.cardsData,
-    };
-  }
+  const { generatePhrases, generateAudios, addCard } = useServices();
 
   async function handleGeneratePhrases() {
     // setWords([]);
     setIsLoading(true);
-    postGeneratePhrases(words)
+    generatePhrases(words)
       .then((res) => {
         setGeneratedPhrases(res.texts);
       })
@@ -138,7 +56,7 @@ export function WordsForm() {
   async function handleGenerateAudios() {
     setErrorOnGenerateAudio(false);
     setIsLoading(true);
-    postGenerateAudios(generatedPhrases)
+    generateAudios(generatedPhrases)
       .then((res) => {
         const audios = res.audios;
         const phrases = JSON.parse(JSON.stringify(generatedPhrases));
@@ -165,7 +83,7 @@ export function WordsForm() {
     if (selectedDeck) {
       setErrorOnAddAnki(false);
       setIsLoading(true);
-      postAddAnki(selectedDeck, generatedPhrases)
+      addCard(selectedDeck, generatedPhrases)
         .then((res) => {})
         .catch(() => {
           setErrorOnAddAnki(true);

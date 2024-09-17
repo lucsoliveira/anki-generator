@@ -1,10 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
-
 import { HealthStatusItem, HealthStatusStyle, StatusCircle } from "./styles";
-import { API_PATHS } from "@/shared/constants/paths";
-import { useFetch } from "@/shared/hooks/useFetch";
 import { Box } from "@/shared/UI/Box";
+import { useServices } from "@/shared/hooks";
+import { Typography } from "@mui/material";
 
 export function HealthStatus() {
   const [servicesStatus, setServicesStatus] = useState({
@@ -12,41 +11,9 @@ export function HealthStatus() {
     ankiConnect: false,
   });
 
-  const { get } = useFetch();
-  async function fetchServicesStatus() {
-    try {
-      const result = await get(API_PATHS.HEALTH);
-      const data: {
-        data: {
-          api: {
-            status: string;
-            uptime: number;
-          };
-          ankiConnect: {
-            status: string;
-          };
-        };
-      } = result.data;
-
-      const statusAnkiConnect = data.data.ankiConnect.status === "UP";
-      const statusApi = data.data.api.status === "UP";
-
-      return {
-        success: true,
-        api: statusApi,
-        ankiConnect: statusAnkiConnect,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        api: false,
-        ankiConnect: false,
-      };
-    }
-  }
-
+  const { getHealth } = useServices();
   useEffect(() => {
-    fetchServicesStatus()
+    getHealth()
       .then((res) => {
         setServicesStatus({
           ankiConnect: res.ankiConnect,
@@ -65,7 +32,7 @@ export function HealthStatus() {
     }
   };
   return (
-    <Box title="Status" padding={10}>
+    <Box title="Status">
       <HealthStatusStyle>
         <HealthStatusItem>
           <StatusCircle
@@ -73,7 +40,7 @@ export function HealthStatus() {
               backgroundColor: getColor(servicesStatus.api),
             }}
           />
-          <p>API</p>
+          <Typography>API</Typography>
         </HealthStatusItem>
         <HealthStatusItem>
           <StatusCircle
@@ -81,7 +48,7 @@ export function HealthStatus() {
               backgroundColor: getColor(servicesStatus.ankiConnect),
             }}
           />
-          <p>Anki Connect</p>
+          <Typography>Anki Connect</Typography>
         </HealthStatusItem>
       </HealthStatusStyle>
     </Box>

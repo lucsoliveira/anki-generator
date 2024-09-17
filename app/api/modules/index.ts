@@ -8,7 +8,7 @@ export const openAIGPT = new ChatgptServiceOpenAI();
 export const testGPT = new TestGPTService();
 export const filesService = new FilesService();
 export const ankiService = new AnkiService(
-  testGPT,
+  openAIGPT,
   filesService,
   ankiConnectService
 );
