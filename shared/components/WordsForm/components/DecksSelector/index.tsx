@@ -1,5 +1,5 @@
 import { API_PATHS } from "@/shared/constants/paths";
-import { useFetch } from "@/shared/hooks/useFetch";
+import { useAPI } from "@/shared/hooks";
 import { SingleSelect } from "@/shared/UI";
 import { useEffect, useState } from "react";
 
@@ -12,7 +12,7 @@ export function DeckSelector({
   const [selectedDeck, setSelectedDeck] = useState<string | undefined>(
     undefined
   );
-  const { request } = useFetch();
+  const { request } = useAPI();
   const fetchDecksNames = async () => {
     const options = { method: "GET", url: API_PATHS.ANKI.DECKS.LIST };
 
