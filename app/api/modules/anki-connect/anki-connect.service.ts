@@ -52,6 +52,7 @@ export class AnkiConnectServiceV1 implements AnkiConnect {
   }
 
   async addNote(deckName: string, card: CardDataDTO) {
+    this.logger.debug(`[ANKIAPI] adding card to deck ${deckName}`);
     const options = {
       method: "POST",
       data: {
