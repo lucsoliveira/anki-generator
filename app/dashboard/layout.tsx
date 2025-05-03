@@ -3,7 +3,7 @@
 import { ResponsiveDrawer } from "@/shared/layouts";
 import AudioFile from "@mui/icons-material/AudioFile";
 import HomeIcon from "@mui/icons-material/Home";
-import { AuthBox } from "./components/AuthBox";
+import { AuthBox } from "../components/AuthBox";
 
 export default function Home({ children }: { children: React.ReactNode }) {
   const navItems = [
