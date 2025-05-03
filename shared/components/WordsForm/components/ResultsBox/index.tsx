@@ -14,7 +14,10 @@ export function ResultsBox({ phrases }: { phrases: PhraseItem[] }) {
 
             {item.audioPath && (
               <audio controls>
-                <source src={item.audioPath?.audioPath} type="audio/mpeg" />
+                <source
+                  src={"uploads/" + item?.audioPath.audioName}
+                  type="audio/mpeg"
+                />
                 Your browser does not support the audio element.
               </audio>
             )}

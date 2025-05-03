@@ -9,5 +9,6 @@ export type PhraseItem = {
   audioPath?: {
     audioPath: string;
     word: string;
+    audioName: string;
   };
 };

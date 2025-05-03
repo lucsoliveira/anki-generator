@@ -47,8 +47,16 @@ export class AnkiController {
         defaultVoice: "alloy",
         randomVoice: true,
       });
+
+      const audiosNormalized = audios.map((item) => {
+        return {
+          ...item,
+          audioPath: item.audioPath.replace("/public", ""),
+          audioName: item.audioPath.split("/uploads/")[1],
+        };
+      });
       return {
-        data: { audios },
+        data: { audios: audiosNormalized },
       };
     } catch (error) {
       this.logger.error(`${error.message}`);
