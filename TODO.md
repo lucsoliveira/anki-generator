@@ -1,0 +1,3 @@
+- [] corrigir a pasta uploads
+- [] remover a pagina /phrases
+- [] testes de unidade
