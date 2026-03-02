@@ -7,6 +7,7 @@ export async function POST(req: NextApiRequest) {
   const result = await ankiController.generatePhrases({
     data: {
       words: data.data.words,
+      language: data.data.language,
     },
   });
 

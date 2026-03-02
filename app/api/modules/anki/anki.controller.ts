@@ -1,6 +1,6 @@
 import { AnkiConnect } from "../anki-connect/ankiconnect";
 import { AnkiService } from "./anki.service";
-import { ItemPhraseDTO, ResultPhrasesDTO } from "./dto";
+import { ItemPhraseDTO, ResultPhrasesDTO, Language } from "./dto";
 import { ResultGetDecksDTO } from "./dto/decks";
 
 export class AnkiController {
@@ -12,15 +12,16 @@ export class AnkiController {
   async generatePhrases(generatePhraseDto: {
     data: {
       words: string[];
+      language?: Language;
     };
   }): Promise<{ data: ResultPhrasesDTO | null; error?: string }> {
-    const { words } = generatePhraseDto.data;
+    const { words, language } = generatePhraseDto.data;
 
     this.logger.log(`starting generate phrases`);
-    this.logger.debug(`input: ${words.join(",")}`);
+    this.logger.debug(`input: ${words.join(",")}; lang=${language}`);
 
     try {
-      const result = await this.ankiService.generatePhrases(words);
+      const result = await this.ankiService.generatePhrases(words, language);
       return {
         data: result,
       };
@@ -36,17 +37,19 @@ export class AnkiController {
   async generateCards(generatePhraseDto: {
     data: {
       texts: ItemPhraseDTO[];
+      language?: Language;
     };
   }): Promise<any> {
-    const { texts } = generatePhraseDto.data;
+    const { texts, language } = generatePhraseDto.data;
 
-    this.logger.log(`starting generate texts audios. texts ${texts.length}`);
+    this.logger.log(`starting generate texts audios. texts ${texts.length}; lang=${language}`);
 
     try {
       const audios = await this.ankiService.generateAudios(texts, {
         defaultVoice: "alloy",
         randomVoice: true,
-      });
+      },
+      language);
 
       const audiosNormalized = audios.map((item) => {
         return {

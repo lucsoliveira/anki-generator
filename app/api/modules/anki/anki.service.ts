@@ -1,7 +1,7 @@
 import { ChatgptService } from "@/legacy/src/chatgpt/chatgpt.service";
 import { FilesService } from "@/legacy/src/files/files.service";
 import { AnkiConnectService } from "../../services/anki-connect/anki-connect.service";
-import { ResultPhrasesDTO, ItemPhraseDTO, CardDataDTO } from "./dto";
+import { ResultPhrasesDTO, ItemPhraseDTO, CardDataDTO, Language } from "./dto";
 import { PROMPT_PHRASES } from "./prompts";
 
 export class AnkiService {
@@ -11,9 +11,9 @@ export class AnkiService {
     private filesService: FilesService,
     private ankiConnectService: AnkiConnectService
   ) {}
-  async generatePhrases(words: string[]) {
+  async generatePhrases(words: string[], language: Language = "en") {
     const normalizeWords = words.join(",").toLocaleLowerCase();
-    const message = PROMPT_PHRASES(normalizeWords);
+    const message = PROMPT_PHRASES(normalizeWords, language);
     const response = await this.gptService.start(message);
     const result: ResultPhrasesDTO = JSON.parse(response);
     return result;
@@ -24,8 +24,11 @@ export class AnkiService {
     options: {
       defaultVoice: any;
       randomVoice: boolean;
-    }
+    },
+    language: Language = "en"
   ): Promise<{ word: string; audioPath: string }[]> {
+    // language parameter may influence voice choice or logging in the future
+    this.logger.debug(`audio generation language: ${language}`);
     const audioPaths: { word: string; audioPath: string }[] = [];
     for (const w of words) {
       const fileName = w.word + ".mp3";

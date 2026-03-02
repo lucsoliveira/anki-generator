@@ -1,3 +1,6 @@
+// supported output languages for phrase/audio generation
+export type Language = "pt" | "en" | "fr";
+
 export interface CardDataDTO {
   cardFront: string;
   cardBack: string;
@@ -12,6 +15,7 @@ export interface ItemPhraseDTO {
     phraseWithoutFormat: string;
     translated: string;
   };
+  // optional when audio hasn't been generated yet
   audioPath?: string;
 }
 

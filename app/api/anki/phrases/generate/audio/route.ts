@@ -7,6 +7,8 @@ export async function POST(req: NextApiRequest) {
   const result = await ankiController.generateCards({
     data: {
       texts: data.data.texts,
+      // language is currently unused by controller but forwarded for future use
+      language: data.data.language,
     },
   });
 

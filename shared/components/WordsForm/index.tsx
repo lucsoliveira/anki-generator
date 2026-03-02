@@ -18,6 +18,7 @@ export function WordsForm() {
   const [selectedDeck, setSelectedDeck] = useState<string | null>(null);
   const [errorGenerateAudio, setErrorOnGenerateAudio] =
     useState<boolean>(false);
+  const [language, setLanguage] = useState<"pt" | "en" | "fr">("en");
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorOnAddAnki, setErrorOnAddAnki] = useState<boolean>(false);
@@ -42,7 +43,7 @@ export function WordsForm() {
 
   async function handleGeneratePhrases() {
     setIsLoading(true);
-    generatePhrases(words)
+    generatePhrases(words, language)
       .then((res) => {
         setGeneratedPhrases(res.texts);
       })
@@ -55,7 +56,7 @@ export function WordsForm() {
   async function handleGenerateAudios() {
     setErrorOnGenerateAudio(false);
     setIsLoading(true);
-    generateAudios(generatedPhrases)
+    generateAudios(generatedPhrases, language)
       .then((res) => {
         const audios = res.audios;
         const phrases = JSON.parse(JSON.stringify(generatedPhrases));
@@ -104,6 +105,18 @@ export function WordsForm() {
             setWordsData(val);
           }}
         />
+        <div>
+          <label htmlFor="language-select">Idioma de saída:</label>
+          <select
+            id="language-select"
+            value={language}
+            onChange={(e) => setLanguage(e.target.value as "pt" | "en" | "fr")}
+          >
+            <option value="en">Inglês</option>
+            <option value="pt">Português</option>
+            <option value="fr">Francês</option>
+          </select>
+        </div>
 
         <Button
           onClick={() => {
@@ -154,6 +167,7 @@ export function WordsForm() {
 
       {generatedPhrases.length > 0 && (
         <Box title="Resultados">
+          <p>Idioma selecionado: {language === 'en' ? 'Inglês' : language === 'pt' ? 'Português' : 'Francês'}</p>
           <ResultsBox phrases={generatedPhrases} />
           <Button onClick={handleGenerateAudios}>Gerar Audios</Button>
 

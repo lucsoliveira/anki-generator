@@ -5,13 +5,14 @@ import { useAPI } from "../hooks";
 export const AudioServices = () => {
   const { request } = useAPI();
 
-  async function generateAudios(phrases: PhraseItem[]) {
+  async function generateAudios(phrases: PhraseItem[], language: string = "en") {
     const options = {
       method: "POST",
       url: API_PATHS.ANKI.PHRASES.AUDIO,
       data: {
         data: {
           texts: phrases,
+          language,
         },
       },
     };

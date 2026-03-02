@@ -5,11 +5,11 @@ import { useAPI } from "../hooks";
 export const AnkiServices = () => {
   const { request } = useAPI();
 
-  async function generatePhrases(words: string[]) {
+  async function generatePhrases(words: string[], language: string = "en") {
     const options = {
       method: "POST",
       url: API_PATHS.ANKI.PHRASES.GENERATE,
-      data: { data: { words: words } },
+      data: { data: { words: words, language } },
     };
 
     const response = await request(options);

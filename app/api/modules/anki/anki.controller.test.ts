@@ -28,9 +28,10 @@ describe("AnkiController", () => {
     mockAnkiService.generatePhrases.mockResolvedValue(fakeResult);
 
     const res = await controller.generatePhrases({
-      data: { words: ["hello"] },
+      data: { words: ["hello"], language: "fr" },
     });
 
+    expect(mockAnkiService.generatePhrases).toHaveBeenCalledWith(["hello"], "fr");
     expect(res.data).toEqual(fakeResult);
     expect(res.error).toBeUndefined();
   });
@@ -38,7 +39,7 @@ describe("AnkiController", () => {
   it("generatePhrases - error", async () => {
     mockAnkiService.generatePhrases.mockRejectedValue(new Error("fail"));
 
-    const res = await controller.generatePhrases({ data: { words: ["x"] } });
+    const res = await controller.generatePhrases({ data: { words: ["x"], language: "pt" } });
 
     expect(res.data).toBeNull();
     expect(res.error).toBe("fail");
@@ -56,8 +57,12 @@ describe("AnkiController", () => {
       { word: "w", audioPath: "/public/uploads/myfile.mp3" },
     ]);
 
-    const res = await controller.generateCards({ data: { texts } });
+    const res = await controller.generateCards({ data: { texts, language: "fr" } });
 
+    expect(mockAnkiService.generateAudios).toHaveBeenCalledWith(texts, {
+      defaultVoice: "alloy",
+      randomVoice: true,
+    }, "fr");
     expect(res.data).toBeDefined();
     const audios = res.data.audios;
     expect(audios[0].audioPath).toBe("/uploads/myfile.mp3");

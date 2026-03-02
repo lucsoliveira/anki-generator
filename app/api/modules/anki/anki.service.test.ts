@@ -33,7 +33,7 @@ describe("AnkiService", () => {
     const fake = { phrases: [{ word: "w" }] };
     mockGptService.start.mockResolvedValue(JSON.stringify(fake));
 
-    const res = await service.generatePhrases(["a"]);
+    const res = await service.generatePhrases(["a"], "fr");
 
     expect(res).toEqual(fake);
   });
@@ -50,7 +50,7 @@ describe("AnkiService", () => {
     const res = await service.generateAudios(words as any, {
       defaultVoice: "v",
       randomVoice: false,
-    });
+    }, "pt");
 
     expect(res[0].word).toBe("w");
     expect(res[0].audioPath).toBe("/public/uploads/f.mp3");
