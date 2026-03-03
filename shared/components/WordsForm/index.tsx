@@ -167,7 +167,14 @@ export function WordsForm() {
 
       {generatedPhrases.length > 0 && (
         <Box title="Resultados">
-          <p>Idioma selecionado: {language === 'en' ? 'Inglês' : language === 'pt' ? 'Português' : 'Francês'}</p>
+          <p>
+            Idioma selecionado:{" "}
+            {language === "en"
+              ? "Inglês"
+              : language === "pt"
+                ? "Português"
+                : "Francês"}
+          </p>
           <ResultsBox phrases={generatedPhrases} />
           <Button onClick={handleGenerateAudios}>Gerar Audios</Button>
 

@@ -42,19 +42,24 @@ export class AnkiController {
   }): Promise<any> {
     const { texts, language } = generatePhraseDto.data;
 
-    this.logger.log(`starting generate texts audios. texts ${texts.length}; lang=${language}`);
+    this.logger.log(
+      `starting generate texts audios. texts ${texts.length}; lang=${language}`
+    );
 
     try {
-      const audios = await this.ankiService.generateAudios(texts, {
-        defaultVoice: "alloy",
-        randomVoice: true,
-      },
-      language);
+      const audios = await this.ankiService.generateAudios(
+        texts,
+        {
+          defaultVoice: "alloy",
+          randomVoice: true,
+        },
+        language
+      );
 
       const audiosNormalized = audios.map((item) => {
         return {
           ...item,
-          audioPath: item.audioPath.replace("/public", ""),
+          audioPath: item.audioPath,
           audioName: item.audioPath.split("/uploads/")[1],
         };
       });

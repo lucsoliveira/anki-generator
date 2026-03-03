@@ -47,10 +47,14 @@ describe("AnkiService", () => {
 
     mockFilesService.create.mockResolvedValue("/public/uploads/f.mp3");
 
-    const res = await service.generateAudios(words as any, {
-      defaultVoice: "v",
-      randomVoice: false,
-    }, "pt");
+    const res = await service.generateAudios(
+      words as any,
+      {
+        defaultVoice: "v",
+        randomVoice: false,
+      },
+      "pt"
+    );
 
     expect(res[0].word).toBe("w");
     expect(res[0].audioPath).toBe("/public/uploads/f.mp3");
