@@ -76,7 +76,7 @@ describe("AnkiController", () => {
     );
     expect(res.data).toBeDefined();
     const audios = res.data.audios;
-    expect(audios[0].audioPath).toBe("/uploads/myfile.mp3");
+    expect(audios[0].audioPath).toBe("/public/uploads/myfile.mp3");
     expect(audios[0].audioName).toBe("myfile.mp3");
   });
 

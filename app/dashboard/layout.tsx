@@ -3,6 +3,7 @@
 import { ResponsiveDrawer } from "@/shared/layouts";
 import AudioFile from "@mui/icons-material/AudioFile";
 import HomeIcon from "@mui/icons-material/Home";
+import StorageIcon from "@mui/icons-material/Storage";
 import { AuthBox } from "../components/AuthBox";
 
 export default function Home({ children }: { children: React.ReactNode }) {
@@ -16,6 +17,11 @@ export default function Home({ children }: { children: React.ReactNode }) {
       label: "Frases",
       icon: <AudioFile />,
       path: "/dashboard/phrases",
+    },
+    {
+      label: "Uploads",
+      icon: <StorageIcon />,
+      path: "/dashboard/uploads",
     },
   ];
   return (
