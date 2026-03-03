@@ -3,7 +3,12 @@ import { AnkiConnectServiceV1 } from "../anki-connect";
 export class HealthController {
   constructor(private ankiConnectService: AnkiConnectServiceV1) {}
 
-  async getHealth(): Promise<any> {
+  async getHealth(): Promise<{
+    data: {
+      api: { status: string; uptime: number };
+      ankiConnect: { status: string };
+    };
+  }> {
     const ankiConnectStatus = await this.ankiConnectService.checkHealth();
     return {
       data: {

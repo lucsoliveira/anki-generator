@@ -2,9 +2,9 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { AnkiService } from "./anki.service";
 
 describe("AnkiService", () => {
-  let mockGptService: any;
-  let mockFilesService: any;
-  let mockAnkiConnectService: any;
+  let mockGptService: Record<string, unknown>;
+  let mockFilesService: Record<string, unknown>;
+  let mockAnkiConnectService: Record<string, unknown>;
   let service: AnkiService;
 
   beforeEach(() => {
@@ -48,6 +48,7 @@ describe("AnkiService", () => {
     mockFilesService.create.mockResolvedValue("/public/uploads/f.mp3");
 
     const res = await service.generateAudios(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       words as any,
       {
         defaultVoice: "v",
@@ -75,7 +76,7 @@ describe("AnkiService", () => {
       name: "a123.mp3",
     });
 
-    const res = await service.generateCardsData(words as any);
+    const res = await service.generateCardsData(words as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
     expect(res[0].cardFront).toBe("front");
     expect(res[0].cardBack).toBe("back");

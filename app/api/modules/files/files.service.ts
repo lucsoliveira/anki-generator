@@ -1,6 +1,5 @@
 import { readFileSync, writeFileSync, readdirSync, unlinkSync } from "node:fs";
 import { resolve } from "node:path";
-import path from "node:path";
 
 export class FilesService {
   logger = console;
@@ -16,8 +15,9 @@ export class FilesService {
     return filePath;
   }
 
-  async remove(filePath: string) {
-    // await fs.promises.writeFile(filePath);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async remove(_filePath: string) {
+    // await fs.promises.writeFile(_filePath);
   }
 
   async convertToBase64(filePath: string) {

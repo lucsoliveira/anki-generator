@@ -1,7 +1,23 @@
 import { AnkiConnect } from "../anki-connect/ankiconnect";
 import { AnkiService } from "./anki.service";
-import { ItemPhraseDTO, ResultPhrasesDTO, Language } from "./dto";
+import { ItemPhraseDTO, ResultPhrasesDTO, Language, CardDataDTO } from "./dto";
 import { ResultGetDecksDTO } from "./dto/decks";
+
+interface AudioResponseDTO {
+  word: string;
+  audioPath: string;
+  audioName: string;
+}
+
+interface GenerateCardsResponseDTO {
+  data: { audios: AudioResponseDTO[] } | null;
+  error?: string;
+}
+
+interface GenerateCardsAndSyncResponseDTO {
+  data: { cardsData: CardDataDTO[] } | null;
+  error?: string;
+}
 
 export class AnkiController {
   private readonly logger = console;
@@ -26,10 +42,12 @@ export class AnkiController {
         data: result,
       };
     } catch (error) {
-      this.logger.error(`${error.message}`);
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+      this.logger.error(`${errorMessage}`);
       return {
         data: null,
-        error: error.message,
+        error: errorMessage,
       };
     }
   }
@@ -39,7 +57,7 @@ export class AnkiController {
       texts: ItemPhraseDTO[];
       language?: Language;
     };
-  }): Promise<any> {
+  }): Promise<GenerateCardsResponseDTO> {
     const { texts, language } = generatePhraseDto.data;
 
     this.logger.log(
@@ -67,10 +85,12 @@ export class AnkiController {
         data: { audios: audiosNormalized },
       };
     } catch (error) {
-      this.logger.error(`${error.message}`);
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+      this.logger.error(`${errorMessage}`);
       return {
         data: null,
-        error: error.message,
+        error: errorMessage,
       };
     }
   }
@@ -80,7 +100,7 @@ export class AnkiController {
       deckName: string;
       texts: ItemPhraseDTO[];
     };
-  }): Promise<any> {
+  }): Promise<GenerateCardsAndSyncResponseDTO> {
     const { deckName, texts } = generatePhraseDto.data;
 
     this.logger.log(`starting generate texts audios. texts ${texts.length}`);
@@ -96,10 +116,12 @@ export class AnkiController {
         data: { cardsData },
       };
     } catch (error) {
-      this.logger.error(`${error.message}`);
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+      this.logger.error(`${errorMessage}`);
       return {
         data: null,
-        error: error.message,
+        error: errorMessage,
       };
     }
   }
@@ -114,10 +136,12 @@ export class AnkiController {
         data: { decks },
       };
     } catch (error) {
-      this.logger.error(`${error.message}`);
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+      this.logger.error(`${errorMessage}`);
       return {
         data: null,
-        error: error.message,
+        error: errorMessage,
       };
     }
   }

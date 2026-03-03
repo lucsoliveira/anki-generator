@@ -2,8 +2,8 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { AnkiController } from "./anki.controller";
 
 describe("AnkiController", () => {
-  let mockAnkiService: any;
-  let mockAnkiConnect: any;
+  let mockAnkiService: AnkiController;
+  let mockAnkiConnect: AnkiController;
   let controller: AnkiController;
 
   beforeEach(() => {

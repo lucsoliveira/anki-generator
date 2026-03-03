@@ -12,8 +12,8 @@ export class AnkiConnectMock implements AnkiConnect {
   }
 
   async addNote(
-    deckName: string,
-    card: CardDataDTO
+    _deckName: string, // eslint-disable-line @typescript-eslint/no-unused-vars
+    _card: CardDataDTO // eslint-disable-line @typescript-eslint/no-unused-vars
   ): Promise<{ result: number; error: unknown }> {
     return {
       result: 1,
@@ -23,7 +23,7 @@ export class AnkiConnectMock implements AnkiConnect {
 
   async uploadFileToAnki({
     fileName,
-    data,
+    data, // eslint-disable-line @typescript-eslint/no-unused-vars
   }: {
     fileName: string;
     data: string;

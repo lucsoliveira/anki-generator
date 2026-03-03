@@ -43,8 +43,9 @@ export class AnkiConnectServiceV1 implements AnkiConnect {
       return {
         status: "UP",
       };
-    } catch (error: any) {
-      this.logger.error(`[ANKI] ${error?.message}`);
+    } catch (error: unknown) {
+      const err = error as Record<string, unknown>;
+      this.logger.error(`[ANKI] ${err?.message}`);
       return {
         status: "DOWN",
       };

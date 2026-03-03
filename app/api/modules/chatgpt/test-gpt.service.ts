@@ -56,8 +56,9 @@ export class TestGPTService implements IChatGPT {
   }
 
   async generateAudio(
-    data: string,
-    options: {
+    _data: string, // eslint-disable-line @typescript-eslint/no-unused-vars
+    _options: {
+      // eslint-disable-line @typescript-eslint/no-unused-vars
       randomVoice: boolean;
       defaultVoice: VoicesTypes;
     }

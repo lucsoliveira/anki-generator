@@ -8,5 +8,5 @@ export interface IChatGPT {
       randomVoice: boolean;
       defaultVoice: VoicesTypes;
     }
-  ): Promise<any>;
+  ): Promise<Response | null>;
 }

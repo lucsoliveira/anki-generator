@@ -1,7 +1,6 @@
 import { ankiController } from "@/app/api/modules";
-import { NextApiRequest } from "next";
 
-export async function POST(req: NextApiRequest) {
+export async function POST(req: Request) {
   const data = await req.json();
 
   const result = await ankiController.generateCards({

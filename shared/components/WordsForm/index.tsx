@@ -60,7 +60,7 @@ export function WordsForm() {
       .then((res) => {
         const audios = res.audios;
         const phrases = JSON.parse(JSON.stringify(generatedPhrases));
-        const phrasesWithAudio = phrases.map((item) => {
+        const phrasesWithAudio = phrases.map((item: PhraseItem) => {
           const audio = audios.filter((a) => a.word === item.word);
 
           return {
